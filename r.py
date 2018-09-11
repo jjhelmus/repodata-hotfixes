@@ -155,11 +155,11 @@ def _patch_repodata(repodata, subdir):
             instructions["packages"][fn]['namespace'] = NAMESPACE_OVERRIDES[record_name]
         # ensure that all r/r-base/mro-base packages have the mutex
         if record_name == "r-base":
-            if not any(dep.split()[0] == "_r_mutex" for dep in record['depends']):
+            if not any(dep.split()[0] == "_r-mutex" for dep in record['depends']):
                 record['depends'].append("_r-mutex 1.* anacondar_1")
                 instructions["packages"][fn]["depends"] = record['depends']
         elif record_name == "mro-base":
-            if not any(dep.split()[0] == "_r_mutex" for dep in record['depends']):
+            if not any(dep.split()[0] == "_r-mutex" for dep in record['depends']):
                 record['depends'].append("_r-mutex 1.* mro_2")
                 instructions["packages"][fn]["depends"] = record['depends']
         # None of the 3.1.2 builds used r-base, and none of them have the mutex
