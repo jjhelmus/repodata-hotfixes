@@ -35,7 +35,6 @@ REMOVALS = {
     "any": {
         "r-3.[123]*",
         "r-base-3.[123]*",
-        "r-essentials-*-mro*",
     }
 }
 
@@ -174,6 +173,17 @@ def _patch_repodata(repodata, subdir):
                 record['depends'].remove('r-base')
                 record['depends'].append('r-base 3.1.2')
                 instructions["packages"][fn]["depends"] = record['depends']
+        # cyclical dep here
+        if record_name in ("r-recommended", "r-essentials"):
+            new_deps = []
+            for dep in record['depends']:
+                parts = dep.split()
+                if len(parts) > 1 and parts[0] == 'r':
+                    new_deps.append("r-base %s" % parts[1])
+                else:
+                    new_deps.append(dep)
+            record['depends'] = new_deps
+            instructions["packages"][fn]["depends"] = record['depends']
 
         if (any(fnmatch.fnmatch(fn, rev) for rev in REVOKED.get(subdir, [])) or
                  any(fnmatch.fnmatch(fn, rev) for rev in REVOKED.get("any", []))):
